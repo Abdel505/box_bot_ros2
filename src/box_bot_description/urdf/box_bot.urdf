@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot name="box_bot">
+
   <link name="base_link">
     <visual>
       <geometry>
@@ -18,7 +19,6 @@
     </inertial>
   </link>
 
-  <!-- Right Wheel -->
   <link name="right_wheel">
     <visual>
       <geometry>
@@ -46,7 +46,6 @@
     <axis xyz="0 0 -1"/>
   </joint>
 
-  <!-- Left Wheel -->
   <link name="left_wheel">
     <visual>
       <geometry>
@@ -74,7 +73,6 @@
     <axis xyz="0 0 1"/>
   </joint>
 
-  <!-- Caster Wheel -->
   <link name="caster_wheel">
     <visual>
       <geometry>
@@ -100,7 +98,8 @@
     <child link="caster_wheel"/>
     <origin xyz="0.2 0 -0.1"/>
   </joint>
-<link name="lidar_link">
+
+  <link name="lidar_link">
     <visual>
       <geometry><cylinder radius="0.05" length="0.1"/></geometry>
       <material name="black"><color rgba="0 0 0 1"/></material>
@@ -151,11 +150,16 @@
       <odom_publish_frequency>20</odom_publish_frequency>
       <topic>cmd_vel</topic>
       <odom_topic>odom</odom_topic>
-      <tf_topic>tf</tf_topic>
+      <tf_topic>model/box_bot/tf</tf_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>base_link</child_frame_id>
     </plugin>
-    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher"/>
+
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>model/box_bot/joint_state</topic>
+      <joint_name>left_wheel_joint</joint_name>
+      <joint_name>right_wheel_joint</joint_name>
+    </plugin>
   </gazebo>
 
   <gazebo reference="caster_wheel">

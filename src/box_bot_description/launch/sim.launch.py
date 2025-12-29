@@ -12,8 +12,7 @@ def generate_launch_description():
     pkg_share = get_package_share_directory(package_name)
     urdf_path = os.path.join(pkg_share, 'urdf', 'box_bot.urdf')
 
-    # 2. Launch Gazebo Sim (The NEW way for Ubuntu 24.04)
-    # This replaces 'gazebo_ros' with 'ros_gz_sim'
+    # 2. Launch Gazebo Sim
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
@@ -21,6 +20,7 @@ def generate_launch_description():
     )
 
     # 3. Robot State Publisher
+    # This node reads the URDF and transforms from /joint_states to position the wheels
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -32,7 +32,6 @@ def generate_launch_description():
     )
 
     # 4. Spawn the Robot in Gazebo
-    # Note: Using 'ros_gz_sim' create instead of 'spawn_entity'
     spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -40,17 +39,26 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 5. Bridge (Tells ROS 2 to listen to Gazebo sensors)
+    # 5. Bridge (The "Translator")
+    # Added /model/box_bot/joint_state to bring wheel rotations to ROS 2
     bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
-            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
-            '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
-        ],
-        output='screen'
-    )
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            arguments=[
+                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+                '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
+                '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+                # Bridge the joint states
+                '/model/box_bot/joint_state@sensor_msgs/msg/JointState@gz.msgs.Model',
+                # Bridge the TF (This connects the wheels in the PDF)
+                '/model/box_bot/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V'
+            ],
+            remappings=[
+                ('/model/box_bot/joint_state', '/joint_states'),
+                ('/model/box_bot/tf', '/tf')
+            ],
+            output='screen'
+        )
 
     return LaunchDescription([
         gazebo,
