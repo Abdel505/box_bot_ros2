@@ -1,0 +1,1 @@
+/home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/launch/sim.launch.py
