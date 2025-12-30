@@ -1,0 +1,27 @@
+[3.526s] Invoking command in '/home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description': PYTHONPATH=/home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/build --no-deps symlink_data
+[4.497s] running develop
+[5.084s] running egg_info
+[5.084s] creating box_bot_description.egg-info
+[5.134s] writing box_bot_description.egg-info/PKG-INFO
+[5.134s] writing dependency_links to box_bot_description.egg-info/dependency_links.txt
+[5.135s] writing requirements to box_bot_description.egg-info/requires.txt
+[5.135s] writing top-level names to box_bot_description.egg-info/top_level.txt
+[5.135s] writing manifest file 'box_bot_description.egg-info/SOURCES.txt'
+[5.228s] reading manifest file 'box_bot_description.egg-info/SOURCES.txt'
+[5.230s] writing manifest file 'box_bot_description.egg-info/SOURCES.txt'
+[5.278s] running build_ext
+[5.300s] Creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/lib/python3.12/site-packages/box-bot-description.egg-link (link to .)
+[5.302s] 
+[5.302s] Installed /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description
+[5.307s] running symlink_data
+[5.307s] creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/ament_index
+[5.307s] creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/ament_index/resource_index
+[5.308s] creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/ament_index/resource_index/packages
+[5.308s] symbolically linking /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/resource/box_bot_description -> /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/ament_index/resource_index/packages
+[5.308s] symbolically linking /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/package.xml -> /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/box_bot_description
+[5.309s] creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/box_bot_description/launch
+[5.309s] symbolically linking /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/launch/sim.launch.py -> /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/box_bot_description/launch
+[5.309s] creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/box_bot_description/urdf
+[5.309s] symbolically linking /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/urdf/box_bot.urdf -> /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/box_bot_description/urdf
+[5.310s] creating /home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/share/box_bot_description/world
+[5.353s] Invoked command in '/home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description' returned '0': PYTHONPATH=/home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ubuntu/Desktop/ROS2/box_bot_ws/install/box_bot_description/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ubuntu/Desktop/ROS2/box_bot_ws/build/box_bot_description/build --no-deps symlink_data
