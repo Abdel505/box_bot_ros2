@@ -3,7 +3,7 @@ import os
 from glob import glob
 
 package_name = 'box_bot_description'
-
+#Test the gitignore file to make sure it's working.
 setup(
     name=package_name,
     version='0.0.0',
