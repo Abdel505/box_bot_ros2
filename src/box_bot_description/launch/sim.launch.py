@@ -42,24 +42,24 @@ def generate_launch_description():
     # 5. Bridge (The "Translator")
     # Added /model/box_bot/joint_state to bring wheel rotations to ROS 2
     bridge = Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            arguments=[
-                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
-                '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
-                '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
-                # Bridge the joint states
-                '/model/box_bot/joint_state@sensor_msgs/msg/JointState@gz.msgs.Model',
-                # Bridge the TF (This connects the wheels in the PDF)
-                '/model/box_bot/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V'
-            ],
-            remappings=[
-                ('/model/box_bot/joint_state', '/joint_states'),
-                ('/model/box_bot/tf', '/tf')
-            ],
-            output='screen'
-        )
-
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            # Format: /gz_topic@ros_msg_type@gz_msg_type
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            # Bridge the joint states
+            '/model/box_bot/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model',
+            # Bridge the TF (This connects the wheels in the PDF)
+            '/model/box_bot/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
+        ],
+        remappings=[
+            ('/model/box_bot/joint_state', '/joint_states'),
+            ('/model/box_bot/tf', '/tf')
+        ],
+        output='screen'
+    )
     return LaunchDescription([
         gazebo,
         robot_state_publisher,

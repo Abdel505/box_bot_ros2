@@ -2,9 +2,11 @@ package.xml
 setup.cfg
 setup.py
 box_bot_description/__init__.py
+box_bot_description/obstacleavoider.py
 box_bot_description.egg-info/PKG-INFO
 box_bot_description.egg-info/SOURCES.txt
 box_bot_description.egg-info/dependency_links.txt
+box_bot_description.egg-info/entry_points.txt
 box_bot_description.egg-info/requires.txt
 box_bot_description.egg-info/top_level.txt
 box_bot_description.egg-info/zip-safe

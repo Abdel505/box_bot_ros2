@@ -1,0 +1,2 @@
+[console_scripts]
+obstacle_avoider = box_bot_description.obstacleavoider:main

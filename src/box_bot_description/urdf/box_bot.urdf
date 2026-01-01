@@ -162,7 +162,7 @@
           <max>10.0</max>
         </range>
       </lidar>
-      <topic>scan</topic>
+      <topic>/scan</topic>
       <gz_frame_id>lidar_link</gz_frame_id>
     </sensor>
   </gazebo>
@@ -188,6 +188,11 @@
     </plugin>
   </gazebo>
 
+  <gazebo>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo>
   <gazebo reference="caster_wheel">
     <mu1>0.001</mu1>
     <mu2>0.001</mu2>
@@ -197,4 +202,6 @@
     <mu1>0.001</mu1>
     <mu2>0.001</mu2>
   </gazebo>
+
+
 </robot>

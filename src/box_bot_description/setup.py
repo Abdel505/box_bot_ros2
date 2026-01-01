@@ -30,6 +30,7 @@ setup(
         'console_scripts': [
             # If you write a python control node, add it here:
             # 'control_node = box_bot_description.control_node:main'
+            'obstacle_avoider = box_bot_description.obstacleavoider:main',
         ],
     },
 )
