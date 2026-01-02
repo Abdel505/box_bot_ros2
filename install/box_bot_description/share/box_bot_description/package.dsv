@@ -1,9 +1,0 @@
-source;share/box_bot_description/hook/pythonpath.ps1
-source;share/box_bot_description/hook/pythonpath.dsv
-source;share/box_bot_description/hook/pythonpath.sh
-source;share/box_bot_description/hook/ament_prefix_path.ps1
-source;share/box_bot_description/hook/ament_prefix_path.dsv
-source;share/box_bot_description/hook/ament_prefix_path.sh
-source;../../build/box_bot_description/share/box_bot_description/hook/pythonpath_develop.ps1
-source;../../build/box_bot_description/share/box_bot_description/hook/pythonpath_develop.dsv
-source;../../build/box_bot_description/share/box_bot_description/hook/pythonpath_develop.sh
