@@ -66,3 +66,4 @@ def generate_launch_description():
         spawn_entity,
         bridge,
     ])
+#Test the gitignore file to make sure it's working.

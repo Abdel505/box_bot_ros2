@@ -23,10 +23,17 @@ class ObstacleAvoider(Node):
         self.subscription  # prevent unused variable warning
 
         self.get_logger().info('Obstacle Avoider Node Started: Autonomous Obstacle Avoidance')
+        
+        # State Machine Variables
+        self.state = 'FORWARD'
+        self.state_start_time = 0.0
+        self.backup_duration = 2.0  # seconds
+        self.turn_direction = -1.0  # Default turn right (-1.0) or left (1.0)
 
     def listener_callback(self, msg):
         # Initialize velocity command
         cmd = Twist()
+        current_time = self.get_clock().now().nanoseconds / 1e9
 
         # Analyze LaserScan data
         # msg.ranges contains the distance readings.
@@ -49,18 +56,54 @@ class ObstacleAvoider(Node):
             min_distance = min(valid_ranges)
 
         # Decision logic: "if see wall, turn right"
-        safe_distance = 0.3  # meters
+        safe_distance = 0.5  # meters
 
-        if min_distance < safe_distance:
-            # Obstacle detected
-            self.get_logger().info(f'Obstacle detected at {min_distance:.2f}m! Turning right.')
-            cmd.linear.x = 0.0
-            cmd.angular.z = -0.5  # Turn right (negative z)
-        else:
-            # Path clear
-            self.get_logger().info(f'Path clear ({min_distance:.2f}m). Moving forward.', throttle_duration_sec=2.0)
-            cmd.linear.x = 0.5   # Move forward
-            cmd.angular.z = 0.0
+        if self.state == 'FORWARD':
+            if min_distance < safe_distance:
+                # Obstacle detected, switch to BACKING
+                self.get_logger().info(f'Obstacle detected at {min_distance:.2f}m! Backing up.')
+                self.state = 'BACKING'
+                self.state_start_time = current_time
+                cmd.linear.x = 0.0
+                cmd.angular.z = 0.0
+            else:
+                # Path clear
+                self.get_logger().info(f'Path clear ({min_distance:.2f}m). Moving forward.', throttle_duration_sec=2.0)
+                cmd.linear.x = 0.9  # Move forward
+                cmd.angular.z = 0.0
+
+        elif self.state == 'BACKING':
+            if (current_time - self.state_start_time) < self.backup_duration:
+                cmd.linear.x = -0.2  # Move backward
+                cmd.angular.z = 0.0
+            else:
+                # Decide which side is clearer
+                # Right side: ranges[0 : mid_index], Left side: ranges[mid_index : end]
+                # We treat 'inf' as range_max to favor open spaces
+                left_ranges = [r if r < msg.range_max else msg.range_max for r in msg.ranges[mid_index:]]
+                right_ranges = [r if r < msg.range_max else msg.range_max for r in msg.ranges[:mid_index]]
+
+                avg_left = sum(left_ranges) / len(left_ranges) if left_ranges else 0.0
+                avg_right = sum(right_ranges) / len(right_ranges) if right_ranges else 0.0
+
+                if avg_left > avg_right:
+                    self.turn_direction = 1.0  # Turn Left
+                    self.get_logger().info(f'Backing done. Left ({avg_left:.1f}m) > Right ({avg_right:.1f}m). Turning Left.')
+                else:
+                    self.turn_direction = -1.0 # Turn Right
+                    self.get_logger().info(f'Backing done. Right ({avg_right:.1f}m) >= Left ({avg_left:.1f}m). Turning Right.')
+
+                self.state = 'TURNING'
+                self.state_start_time = current_time
+
+        elif self.state == 'TURNING':
+            # Turn until the path is clear (hysteresis added to prevent flickering)
+            if min_distance > (safe_distance + 0.2):
+                self.get_logger().info(f'Path clear ({min_distance:.2f}m). Stop turning.')
+                self.state = 'FORWARD'
+            else:
+                cmd.linear.x = 0.0
+                cmd.angular.z = 0.5 * self.turn_direction
 
         # Publish the command
         self.publisher_.publish(cmd)
