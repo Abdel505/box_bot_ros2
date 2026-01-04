@@ -60,10 +60,19 @@ def generate_launch_description():
         ],
         output='screen'
     )
+
+    # 6. Obstacle Avoider
+    obstacle_avoider = Node(
+        package='box_bot_description',
+        executable='obstacle_avoider',
+        output='screen'
+    )
+
     return LaunchDescription([
         gazebo,
         robot_state_publisher,
         spawn_entity,
         bridge,
+        obstacle_avoider,
     ])
 #Test the gitignore file to make sure it's working.
