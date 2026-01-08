@@ -11,6 +11,10 @@ def generate_launch_description():
     # 1. Path to your URDF
     pkg_share = get_package_share_directory(package_name)
     urdf_path = os.path.join(pkg_share, 'urdf', 'box_bot.urdf')
+    
+    # Read the URDF content once to ensure consistency
+    with open(urdf_path, 'r') as infp:
+        robot_desc = infp.read()
 
     # 2. Launch Gazebo Sim
     gazebo = IncludeLaunchDescription(
@@ -20,18 +24,19 @@ def generate_launch_description():
     )
 
     # 3. Robot State Publisher
-    # This node reads the URDF and transforms from /joint_states to position the wheels
+    # Frequency increased to 50Hz to ensure SLAM Toolbox never waits for a transform
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
         parameters=[{
-            'robot_description': open(urdf_path).read(),
-            'use_sim_time': True
+            'robot_description': robot_desc,
+            'use_sim_time': True,
+            'publish_frequency': 50.0 
         }]
     )
 
-    # 4. Spawn the Robot in Gazebo
+    # 5. Spawn the Robot in Gazebo
     spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -39,29 +44,27 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 5. Bridge (The "Translator")
-    # Added /model/box_bot/joint_state to bring wheel rotations to ROS 2
+    # 6. Bridge (The "Translator")
+    # Added /clock and ensured odometry/tf is bridged to global /tf
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            # Format: /gz_topic@ros_msg_type@gz_msg_type
             '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
-            # Bridge the joint states
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/model/box_bot/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model',
-            # Bridge the TF (This connects the wheels in the PDF)
-            '/model/box_bot/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
+            '/model/box_bot/odometry/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
         ],
         remappings=[
             ('/model/box_bot/joint_state', '/joint_states'),
-            ('/model/box_bot/tf', '/tf')
+            ('/model/box_bot/odometry/tf', '/tf')
         ],
         output='screen'
     )
 
-    # 6. Obstacle Avoider
+    # 7. Obstacle Avoider (Optional)
     obstacle_avoider = Node(
         package='box_bot_description',
         executable='obstacle_avoider',
@@ -75,4 +78,3 @@ def generate_launch_description():
         bridge,
         obstacle_avoider,
     ])
-#Test the gitignore file to make sure it's working.

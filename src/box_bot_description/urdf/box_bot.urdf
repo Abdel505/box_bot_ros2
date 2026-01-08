@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <robot name="box_bot">
 
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+  </joint>
+
   <link name="base_link">
     <visual>
       <geometry>
@@ -165,23 +173,29 @@
       </lidar>
       <topic>/scan</topic>
       <gz_frame_id>lidar_link</gz_frame_id>
+      <always_on>1</always_on>
     </sensor>
   </gazebo>
   
   <gazebo>
-    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
-      <left_joint>left_wheel_joint</left_joint>
-      <right_joint>right_wheel_joint</right_joint>
-      <wheel_separation>0.35</wheel_separation>
-      <wheel_radius>0.05</wheel_radius>
-      <odom_publish_frequency>20</odom_publish_frequency>
-      <topic>/cmd_vel</topic>
-      <odom_topic>odom</odom_topic>
-      <tf_topic>model/box_bot/tf</tf_topic>
-      <frame_id>odom</frame_id>
-      <child_frame_id>base_link</child_frame_id>
-    </plugin> 
+
+  <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+    <left_joint>left_wheel_joint</left_joint>
+    <right_joint>right_wheel_joint</right_joint>
+    <wheel_separation>0.35</wheel_separation>
+    <wheel_radius>0.05</wheel_radius>
+    <odom_publish_frequency>50</odom_publish_frequency>
+    <topic>/cmd_vel</topic>
+    <odom_topic>odom</odom_topic>
     
+    <tf_topic>/model/box_bot/odometry/tf</tf_topic>
+    
+    <frame_id>odom</frame_id>
+    <child_frame_id>base_footprint</child_frame_id>
+    <publish_odom>true</publish_odom>
+    <publish_odom_tf>true</publish_odom_tf>
+  </plugin> 
+      
     <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
       <topic>model/box_bot/joint_state</topic>
       <joint_name>left_wheel_joint</joint_name>
