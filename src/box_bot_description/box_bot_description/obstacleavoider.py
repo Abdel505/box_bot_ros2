@@ -55,6 +55,17 @@ class ObstacleAvoider(Node):
         if valid_ranges:
             min_distance = min(valid_ranges)
 
+        # Calculate a wider buffer distance to ensure corners are clear before resuming forward motion
+        # Using a wider window (e.g., +/- 60 samples) covers the "shoulders" of the robot
+        buffer_size = 60
+        start_buffer = max(0, mid_index - buffer_size)
+        end_buffer = min(len(msg.ranges), mid_index + buffer_size)
+        buffer_ranges = msg.ranges[start_buffer:end_buffer]
+        valid_buffer_ranges = [r for r in buffer_ranges if r < msg.range_max and r > msg.range_min]
+        min_buffer_distance = float('inf')
+        if valid_buffer_ranges:
+            min_buffer_distance = min(valid_buffer_ranges)
+
         # Decision logic: "if see wall, turn right"
         safe_distance = 0.5  # meters
 
@@ -98,8 +109,9 @@ class ObstacleAvoider(Node):
 
         elif self.state == 'TURNING':
             # Turn until the path is clear (hysteresis added to prevent flickering)
-            if min_distance > (safe_distance + 0.2):
-                self.get_logger().info(f'Path clear ({min_distance:.2f}m). Stop turning.')
+            # Use min_buffer_distance to ensure we don't scrape the corner as we move forward
+            if min_buffer_distance > (safe_distance + 0.2):
+                self.get_logger().info(f'Path clear ({min_buffer_distance:.2f}m). Stop turning.')
                 self.state = 'FORWARD'
             else:
                 cmd.linear.x = 0.0
