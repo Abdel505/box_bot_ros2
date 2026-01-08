@@ -1,0 +1,1 @@
+Remove joint_state_publisher node to avoid conflict with bridge
