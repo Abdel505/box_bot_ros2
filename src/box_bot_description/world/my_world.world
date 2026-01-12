@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="default">
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Sun</uri>
+    </include>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Ground Plane</uri>
+    </include>
+
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <model name='room_walls'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>10 0.2 1.0</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>10 0.2 1.0</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.7 0.7 0.7 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <pose>0 5 0.5 0 0 0</pose>
+      </link>
+
+      <link name='south_wall'>
+        <pose>0 -5 0.5 0 0 0</pose>
+        <collision name='collision'><geometry><box><size>10 0.2 1.0</size></box></geometry></collision>
+        <visual name='visual'><geometry><box><size>10 0.2 1.0</size></box></geometry></visual>
+      </link>
+
+      <link name='east_wall'>
+        <pose>5 0 0.5 0 0 1.5708</pose>
+        <collision name='collision'><geometry><box><size>10 0.2 1.0</size></box></geometry></collision>
+        <visual name='visual'><geometry><box><size>10 0.2 1.0</size></box></geometry></visual>
+      </link>
+
+      <link name='west_wall'>
+        <pose>-5 0 0.5 0 0 1.5708</pose>
+        <collision name='collision'><geometry><box><size>10 0.2 1.0</size></box></geometry></collision>
+        <visual name='visual'><geometry><box><size>10 0.2 1.0</size></box></geometry></visual>
+      </link>
+
+      <link name='middle_wall'>
+        <pose>2 2 0.5 0 0 0.785</pose>
+        <collision name='collision'><geometry><box><size>3 0.2 1.0</size></box></geometry></collision>
+        <visual name='visual'><geometry><box><size>3 0.2 1.0</size></box></geometry></visual>
+      </link>
+    </model>
+  </world>
+</sdf>

@@ -8,23 +8,26 @@ from launch_ros.actions import Node
 def generate_launch_description():
     package_name = 'box_bot_description'
     
-    # 1. Path to your URDF
+    # 1. Path Setup
     pkg_share = get_package_share_directory(package_name)
     urdf_path = os.path.join(pkg_share, 'urdf', 'box_bot.urdf')
     
-    # Read the URDF content once to ensure consistency
+    # NEW: Path to your world file
+    world_path = os.path.join(pkg_share, 'world', 'my_world.world')
+    print(f"DEBUG: Looking for world at: {world_path}") # This will show in terminal
+
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
 
-    # 2. Launch Gazebo Sim
+    # 2. Launch Gazebo Sim (UPDATED to use custom world)
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-        launch_arguments={'gz_args': '-r empty.sdf'}.items(),
+        # -r runs the sim immediately, pointing to our world path instead of empty.sdf
+        launch_arguments={'gz_args': f'-r {world_path}'}.items(),
     )
 
     # 3. Robot State Publisher
-    # Frequency increased to 50Hz to ensure SLAM Toolbox never waits for a transform
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -44,8 +47,15 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 6. Bridge (The "Translator")
-    # Added /clock and ensured odometry/tf is bridged to global /tf
+    # 7. Obstacle Avoider (Optional)
+    #obstacle_avoider = Node(
+       # package='box_bot_description',
+       # executable='obstacle_avoider',
+      #  output='screen'
+    #)
+
+    
+    # 6. Bridge
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -64,17 +74,15 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 7. Obstacle Avoider (Optional)
-    obstacle_avoider = Node(
-        package='box_bot_description',
-        executable='obstacle_avoider',
-        output='screen'
-    )
-
     return LaunchDescription([
         gazebo,
         robot_state_publisher,
         spawn_entity,
         bridge,
-        obstacle_avoider,
     ])
+
+
+
+
+
+

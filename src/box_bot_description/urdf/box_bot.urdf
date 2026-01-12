@@ -187,7 +187,7 @@
     <odom_publish_frequency>50</odom_publish_frequency>
     <topic>/cmd_vel</topic>
     <odom_topic>odom</odom_topic>
-    
+
     <tf_topic>/model/box_bot/odometry/tf</tf_topic>
     
     <frame_id>odom</frame_id>
