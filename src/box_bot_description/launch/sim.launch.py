@@ -19,7 +19,7 @@ def generate_launch_description():
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
 
-    # 2. Launch Gazebo Sim (UPDATED to use custom world)
+    # 2. Launch Gazebo Sim with  custom environment
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
@@ -55,7 +55,7 @@ def generate_launch_description():
     #)
 
     
-    # 6. Bridge
+    # 6. Bridge translates the messages between ROS2 and Gazebo.
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -65,12 +65,16 @@ def generate_launch_description():
             '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/model/box_bot/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model',
-            '/model/box_bot/odometry/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'
+            '/model/box_bot/odometry/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            # This is the critical line for the odom -> base_footprint connection
+            '/model/box_bot/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V'        
         ],
         remappings=[
             ('/model/box_bot/joint_state', '/joint_states'),
-            ('/model/box_bot/odometry/tf', '/tf')
+            ('/model/box_bot/odometry/tf', '/tf'),
+            ('/model/box_bot/tf', '/tf')
         ],
+        parameters=[{'use_sim_time': True}], # Ensure the bridge uses sim time too
         output='screen'
     )
 
@@ -80,9 +84,3 @@ def generate_launch_description():
         spawn_entity,
         bridge,
     ])
-
-
-
-
-
-
